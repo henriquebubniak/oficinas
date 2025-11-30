@@ -1,0 +1,512 @@
+\documentclass[10pt]{beamer}
+
+\usetheme{metropolis}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[brazil]{babel}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{graphicx}
+\usepackage{listings}
+\usepackage{xcolor}
+\usepackage{tikz}
+\usetikzlibrary{arrows,positioning,shapes}
+
+% Configuração de código
+\lstset{
+    language=C++,
+    basicstyle=\ttfamily\footnotesize,
+    keywordstyle=\color{blue},
+    commentstyle=\color{gray},
+    stringstyle=\color{red},
+    numbers=left,
+    numberstyle=\tiny\color{gray},
+    stepnumber=1,
+    numbersep=5pt,
+    backgroundcolor=\color{white},
+    showspaces=false,
+    showstringspaces=false,
+    showtabs=false,
+    frame=single,
+    tabsize=4,
+    breaklines=true,
+    breakatwhitespace=false,
+}
+
+\title{Busca Binária}
+\subtitle{Binary Search}
+\author{Oficinas de Programação Competitiva}
+\date{\today}
+
+\begin{document}
+
+\maketitle
+
+\section{Introdução}
+
+\begin{frame}{Motivação}
+    \begin{block}{Problema Clássico}
+        Como você encontra uma palavra no dicionário?
+    \end{block}
+
+    \pause
+
+    \begin{itemize}
+        \item Você abre o dicionário \textbf{no meio}
+        \item Verifica se a palavra está antes ou depois
+        \item Repete o processo na metade correta
+    \end{itemize}
+
+    \pause
+
+    Isso é Busca Binária
+\end{frame}
+
+\begin{frame}{O que é Busca Binária?}
+    Busca Binária é um algoritmo eficiente para encontrar um elemento em uma
+    lista ordenada.
+
+    \pause
+
+    \begin{block}{Conceitos}
+        \begin{itemize}
+            \item Espaço de busca
+            \item Atualização do espaço de busca
+        \end{itemize}
+    \end{block}
+
+    \pause
+
+    \begin{block}{Complexidade}
+        A cada iteração, diminuimos metade do espaço de busca, resultando em
+        complexidade $O(\log n)$.
+    \end{block}
+
+\end{frame}
+
+\section{Implementação Clássica}
+
+\begin{frame}{Problema}
+    \begin{block}{Problema}
+        Dado um array $a$ de tamanho $n$, responda $q$ perguntas do tipo:
+        dado um número $x$, elemento $x$ está em $a$ ou não.
+
+        Restrições: $n, q \leq 10^5$ e $a_i \leq 10^9$,  $1 \leq i \leq n$
+    \end{block}
+
+    \pause
+
+    \begin{itemize}
+        \item Usamos as variáveis $l$ e $r$ como indicadores do espaço de busca.
+        \item Enquanto o tamanho do espaço de busca ($r - l + 1$) é maior que $1$,
+        comparamos o elemento do meio do espaço de busca com x.
+        \item Atualizamos o espaço de busca.
+    \end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]{Implementação Clássica}
+    \begin{lstlisting}
+int l = 0;
+int r = n-1;
+while (l <= r) {
+    int m = (r + l) / 2;
+    if (m < x) {
+        l = m + 1;
+    } else {
+        r = m;
+    }
+}
+if (a[l] == x) {
+    cout << "YES\n";
+} else {
+    cout << "NO\n";
+}
+    \end{lstlisting}
+\end{frame}
+
+\begin{frame}{Detalhes de Implementação}
+    \begin{alertblock}{Cuidados}
+        \begin{itemize}
+            \item \texttt{m = (r + l) / 2}: arredonda para baixo
+            \item Se atualizarmos o espaço de busca com \texttt{l = m}, teríamos um loop infinito.
+            \item Para arredondar para cima: \texttt{m = (r + l + 1) / 2}
+        \end{itemize}
+    \end{alertblock}
+\end{frame}
+
+\section{Funções da STL}
+
+\begin{frame}{Busca Binária na STL}
+    \begin{block}{Por que usar funções prontas?}
+        Os casos de borda da implementação clássica podem ser chatos.
+
+        As funções prontas são:
+        \begin{itemize}
+            \item Menos propenso a erros (casos de borda, loops infinitos)
+            \item Código mais limpo e legível
+            \item Testado e otimizado
+        \end{itemize}
+    \end{block}
+
+    \pause
+
+    \begin{alertblock}{As funções}
+        \begin{description}
+            \item[\texttt{lower\_bound}] Primeiro elemento $\geq$ valor
+            \item[\texttt{upper\_bound}] Primeiro elemento $>$ valor
+        \end{description}
+    \end{alertblock}
+\end{frame}
+
+\begin{frame}{Revisão de iteradores?}
+    Iteradores são objetos que apontam para elementos em um container (como um \texttt{vector}, etc.) e permitem percorrê-los.
+
+    \pause
+
+    \begin{block}{Analogia}
+        Pense em um iterador como um \textbf{ponteiro inteligente} que sabe navegar pelo vetor.
+    \end{block}
+
+    \pause
+
+    \begin{exampleblock}{Por que usar?}
+        \begin{itemize}
+            \item Funções da STL (como \texttt{lower\_bound}) retornam iteradores
+        \end{itemize}
+    \end{exampleblock}
+\end{frame}
+
+\begin{frame}[fragile]{Operações com Iteradores}
+    \begin{lstlisting}
+vector<int> v = {10, 20, 30, 40, 50};
+    \end{lstlisting}
+
+    \pause
+
+    \begin{block}{1. Obter Iteradores}
+        \begin{lstlisting}
+auto inicio = v.begin();  // aponta para v[0]
+auto fim = v.end();       // aponta DEPOIS do ultimo
+        \end{lstlisting}
+    \end{block}
+
+    \pause
+
+    \begin{alertblock}{Importante}
+        \texttt{v.end()} \textbf{NÃO} aponta para o último elemento, mas para a posição \textbf{depois} do último! É usado como limite superior em loops.
+    \end{alertblock}
+\end{frame}
+
+\begin{frame}[fragile]{Operações com Iteradores}
+    \begin{lstlisting}
+vector<int> v = {10, 20, 30, 40, 50};
+auto it = v.begin();
+    \end{lstlisting}
+
+    \pause
+
+    \begin{block}{2. Dereferenciar (acessar o valor)}
+        \begin{lstlisting}
+cout << *it << "\n";      // 10 (valor apontado)
+        \end{lstlisting}
+    \end{block}
+
+    \pause
+
+    \begin{block}{3. Deslocar}
+        \begin{lstlisting}
+it++;           // avanca 1 posicao
+it += 2;        // avanca 2 posicoes
+it--;           // volta 1 posicao
+cout << *it << "\n";  // depende dos deslocamentos
+        \end{lstlisting}
+    \end{block}
+\end{frame}
+
+\begin{frame}[fragile]{Operações com Iteradores}
+    \begin{lstlisting}
+vector<int> v = {10, 20, 30, 40, 50};
+//               0   1   2   3   4
+    \end{lstlisting}
+
+    \begin{block}{4. Obter Índice}
+        \begin{lstlisting}
+auto it = v.begin() + 2;  // aponta para v[2]
+int indice = it - v.begin();
+cout << indice << "\n";   // 2
+
+// Verificar o valor
+cout << *it << "\n";      // 30
+cout << v[indice] << "\n"; // 30 (mesmo elemento)
+        \end{lstlisting}
+    \end{block}
+
+    \pause
+
+    \begin{exampleblock}{Relação}
+        \texttt{it - v.begin()} nos dá o índice do elemento no vetor.
+    \end{exampleblock}
+\end{frame}
+
+\begin{frame}[fragile]{lower\_bound e upper\_bound}
+    \begin{lstlisting}
+vector<int> v = {1, 2, 4, 4, 4, 7, 9};
+//               0  1  2  3  4  5  6
+    \end{lstlisting}
+
+    \pause
+
+    \begin{lstlisting}
+// lower_bound: primeiro >= valor
+auto it1 = lower_bound(v.begin(), v.end(), 4);
+cout << *it1 << "\n";        // 4
+cout << it1 - v.begin() << "\n";  // 2 (posicao)
+    \end{lstlisting}
+
+    \pause
+
+    \begin{lstlisting}
+// upper_bound: primeiro > valor
+auto it2 = upper_bound(v.begin(), v.end(), 4);
+cout << *it2 << "\n";        // 7
+cout << it2 - v.begin() << "\n";  // 5 (posicao)
+    \end{lstlisting}
+\end{frame}
+
+\begin{frame}[fragile]{Cuidados com Iteradores}
+    \begin{alertblock}{Runtime Error: Dereferenciar end()}
+        \begin{lstlisting}
+vector<int> v = {1, 2, 3};
+auto it = lower_bound(v.begin(), v.end(), 10);
+
+// ERRADO! it == v.end()
+cout << *it << "\n";  // Runtime Error!
+        \end{lstlisting}
+    \end{alertblock}
+
+    \pause
+
+    \begin{exampleblock}{Forma Correta}
+        \begin{lstlisting}
+if (it != v.end()) {
+    cout << *it << "\n";  // Seguro
+} else {
+    cout << "Elemento nao encontrado\n";
+}
+        \end{lstlisting}
+    \end{exampleblock}
+\end{frame}
+
+\begin{frame}{Obtendo Outras Comparações}
+    \begin{center}
+        \begin{tabular}{|c|c|}
+            \hline
+            \textbf{Desejado} & \textbf{Como obter} \\
+            \hline
+            Primeiro $\geq x$ & \texttt{lower\_bound(x)} \\
+            \hline
+            Primeiro $> x$ & \texttt{upper\_bound(x)} \\
+            \hline
+            Último $< x$ & \texttt{lower\_bound(x) - 1} \\
+            \hline
+            Último $\leq x$ & \texttt{upper\_bound(x) - 1} \\
+            \hline
+        \end{tabular}
+    \end{center}
+
+    \pause
+
+    \begin{alertblock}{Atenção}
+        Ao fazer \texttt{it - 1}, verifique se \texttt{it != v.begin()}!
+    \end{alertblock}
+\end{frame}
+
+\section{Busca Binária na Resposta}
+
+\begin{frame}{Quando podemos usar busca binária?}
+    \begin{center}
+        \begin{tikzpicture}[scale=0.8]
+            \draw[->] (0,0) -- (12,0) node[right] {$x$};
+            \foreach \x in {0,1,2,3,4,5,6,7,8,9,10,11}
+                \draw (\x,0.1) -- (\x,-0.1);
+
+            \fill[green!30] (0,-0.5) rectangle (6,0.5);
+            \fill[red!30] (6,-0.5) rectangle (11,0.5);
+
+            \node at (3, 0.8) {\textcolor{green!70!black}{Satisfaz}};
+            \node at (8.5, 0.8) {\textcolor{red!70!black}{Não satisfaz}};
+
+            \draw[very thick, blue] (6,-0.5) -- (6,0.5);
+            \node[blue] at (6, -1) {Resposta};
+        \end{tikzpicture}
+    \end{center}
+
+    \begin{itemize}
+        \item Queremos encontrar a \textbf{fronteira} entre as duas regiões
+        \item A busca binária nos permite fazer isso em $O(\log n)$ verificações
+    \end{itemize}
+\end{frame}
+
+
+
+\begin{frame}{Expandindo o Conceito}
+    \begin{block}{Insight Importante}
+        Busca binária não funciona apenas em arrays ordenados!
+    \end{block}
+
+    \pause
+
+    \begin{definition}
+        Podemos usar busca binária em qualquer \textbf{função monotônica}:
+        \begin{itemize}
+            \item Se $f(x)$ é verdadeiro, então $f(x+1)$ também é (ou vice-versa)
+            \item Queremos encontrar a fronteira entre verdadeiro e falso
+        \end{itemize}
+    \end{definition}
+
+    \pause
+
+    \begin{exampleblock}{Aplicação}
+        Transformar problemas de \textbf{otimização} em problemas de \textbf{decisão}:
+        \begin{itemize}
+            \item Otimização: "Qual o máximo/mínimo valor possível?"
+            \item Decisão: "É possível obter valor $x$?"
+        \end{itemize}
+    \end{exampleblock}
+\end{frame}
+
+\begin{frame}{Problema: CSES 1620 - Factory Machines}
+    \begin{block}{Enunciado}
+        Você tem $n$ máquinas. A máquina $i$ produz um produto em $k_i$ segundos.
+
+        Qual o tempo mínimo para produzir $t$ produtos?
+    \end{block}
+
+    \pause
+
+    \begin{example}
+        \textbf{Entrada:} $n = 3$, $t = 7$, tempos = $[3, 2, 5]$
+
+        Em 8 segundos:
+        \begin{itemize}
+            \item Máquina 1: $\lfloor 8/3 \rfloor = 2$ produtos
+            \item Máquina 2: $\lfloor 8/2 \rfloor = 4$ produtos
+            \item Máquina 3: $\lfloor 8/5 \rfloor = 1$ produto
+            \item Total: $2 + 4 + 1 = 7$ produtos
+        \end{itemize}
+
+        \textbf{Resposta:} 8 segundos
+    \end{example}
+\end{frame}
+
+\begin{frame}{Estratégia de Solução}
+    \begin{enumerate}
+        \item \textbf{Problema de Otimização:}
+
+        "Qual o tempo mínimo para produzir $t$ produtos?"
+
+        \pause
+
+        \item \textbf{Transformar em Decisão:}
+
+        "É possível produzir $t$ produtos em $x$ segundos?"
+
+        \pause
+
+        \item \textbf{Observar Monotonicidade:}
+
+        Se é possível em $x$ segundos, também é possível em $x+1$ segundos.
+
+        \pause
+
+        \item \textbf{Busca Binária:}
+
+        Buscar o menor $x$ que torna a resposta verdadeira.
+    \end{enumerate}
+\end{frame}
+
+\begin{frame}[fragile]{Implementação - CSES 1620}
+    \begin{lstlisting}
+#include <bits/stdc++.h>
+using namespace std;
+
+int t, n;
+vector<int> k;
+
+bool check(long long x) {
+    long long products = 0;
+    for (int i = 0; i < n; i++) {
+        products += x / k[i];
+    }
+    return products >= t;
+};
+int main() {
+    cin >> n >> t;
+    k = vector<int>(n);
+    for (int i = 0; i < n; i++) {
+        cin >> k[i];
+    }
+    // continua...
+    \end{lstlisting}
+\end{frame}
+
+\begin{frame}[fragile]{Implementação - CSES 1620 (cont.)}
+    \begin{lstlisting}
+    // ... continuacao
+    long long l = 1;
+    long long r = (long long)*min_element(k.begin(), k.end())*t;
+    while (l <= r) {
+        long long m = (r + l) / 2;
+        if (check(m)) {
+            r = m-1;
+        } else {
+            l = m+1;
+        }
+    }
+    cout << l << "\n";
+}
+    \end{lstlisting}
+
+    \pause
+
+    \begin{alertblock}{Cuidado!}
+        long long é muito importante para esse problema!
+    \end{alertblock}
+\end{frame}
+
+\begin{frame}{Quando Usar Busca Binária na Resposta?}
+    \begin{block}{Sinais para Identificar}
+        \begin{itemize}
+            \item Problema pede "máximo/mínimo valor"
+            \item Existe uma função monotônica relacionada à resposta
+            \item Verificar se um valor específico funciona é "fácil"
+            \item O espaço de busca é muito grande para força bruta
+        \end{itemize}
+    \end{block}
+
+    \pause
+
+    \begin{exampleblock}{Palavras-chave Comuns}
+        \begin{itemize}
+            \item "Minimize o máximo..."
+            \item "Maximize o mínimo..."
+            \item "Qual o menor tempo para..."
+            \item "Qual a maior distância possível..."
+        \end{itemize}
+    \end{exampleblock}
+\end{frame}
+
+\begin{frame}{Dicas de Implementação}
+    \begin{enumerate}
+        \item Use \texttt{long long} quando necessário (overflow!)
+        \item Cuidado com a condição de parada: \texttt{while (l <= r)}
+        \item Verifique se iteradores são válidos antes de dereferenciar
+        \item Sempre verifique a monotonicidade da função
+    \end{enumerate}
+\end{frame}
+
+\begin{frame}[standout]
+    Perguntas?
+\end{frame}
+
+\end{document}
