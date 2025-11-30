@@ -58,7 +58,7 @@ Arquivo onde terão todos os problemas do contest, escritos em linhas diferentes
 
 Apenas para a última linha, o símbolo \\ não será escrito. Lembrar de deixar uma linha vazia ao final do arquivo.
 
-**Exemplo:** \*\*cfr937d4a:\*\* https://codeforces.com/contest/1950/problem/A \
+**Exemplo:** \*\*cf1950a:\*\* https://codeforces.com/contest/1950/problem/A \
 
 para esse arquivo, deve-se separar os problemas que serão apresentados na aula da seguinte forma:
 
