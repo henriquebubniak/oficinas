@@ -1,10 +1,5 @@
 **cf978c:**
-Basicamente é necessário realizar um Prefix Sum em O(n) do vetor inteiro, depois realizar uma busca binária de cada valor nesse vetor de soma. A ideia é salvar todos os valores de M (média = r+l) quando for buscar à direita, pois ao final (quando não tiver mais nada), teremos o maior valor não maior que o m. Por fim, basta retornar a posição desse quarto, e para quantificar as salas dele de fato (um dos requisitos do output), pegamos a diferença entre ele e o anterior.
-
-**cf2148d:**
-O problema é composto por duas partes, primeira é somar TODOS os pares (se nós ligarmos algum ímpar) e depois escolher qual impar utilizar para ligar e qual para desligar. Assim sendo, se não houver nenhum ímpar, basicamente a máquina nunca será ligada, tendo a soma = 0.
-Caso exista, vamos somar todos os pares, e depois vamos para a segunda parte do problema, que é saber qual a melhor escolha para os ímpares em Ligar e Desligar. 
-A melhor escolha será Ligar sempre com o maior ímpar (contabilizando ele na soma) e desligando no menor ímpar, fazendo um two pointers logo após ordenar os ímpares.
+Basicamente é necessário realizar um Prefix Sum em O(n) do vetor inteiro, depois realizar uma busca binária de cada val
 
 **cf812C:**
 Esse problema já é de nível médio e exige uma busca binária sobre as respostas.
@@ -22,3 +17,19 @@ Assim, agora vamos analisar se para aquele valor de k que escolhemos, sum(k) é 
 Monotonicidade, isto é, se ele consegue levar k=5 itens, então significa que obviamente consegue levar k=4 itens. Porém, se não consegue levar k=9 itens, então não consegue levar k=10 itens.
 
 Portanto, basta aplicar uma busca binária nesse vetor até achar o k ideal, note que se sum(k) < Orçamento (s), podemos salvar o valor dessa quantidade de itens, e quanto r < l, esse valor será o melhor.
+**cf817c**
+Se x é really big number, x+1 também é, pois a soma dos dígitos pode crescer no máximo 1. Assim, basta usar busca binária para encontrar o primeiro really big number.
+
+**cf1742e**
+Encontra o primeiro degrau que ele não pode subir usando máximo de prefixos e busca binária, e então a altura total usando soma de prefixos.
+
+**cf1915c:**
+Estamos interessados apenas na possibilidade de "montar" um quadrado a partir dos quadrados dados. 
+Para isso basta realizar a soma de todos os quadrados diretamente (pois cada um tem lado 1) e avaliar se
+essa soma de todos os quadrados "squares" forma um quadrado perfeito.
+Para avaliar se um dado número é um quadrado perfeito, basta realizar uma busca binária. 
+
+**cf1873e:**
+A ideia é usar a busca binária para calcular se, para uma dada altura h, a água necessária é menor ou igual a x. 
+Para compararmos a água necessária, basta percorrer o array de colunas de forma sequencial. 
+Com isso o algoritmo terá complexidade O(nlogn) e consegue passar nos testes.
