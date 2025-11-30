@@ -1,3 +1,6 @@
+**cfgym102961u:**
+Faça uma função para verificar se é possível fabricar t produtos em x segundos e use busca binária na resposta
+
 **cf978c:**
 Basicamente é necessário realizar um Prefix Sum em O(n) do vetor inteiro, depois realizar uma busca binária de cada val
 
